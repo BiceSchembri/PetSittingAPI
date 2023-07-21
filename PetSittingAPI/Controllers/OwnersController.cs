@@ -93,7 +93,7 @@ namespace PetSittingAPI.Controllers
             _context.Owners.Add(owner);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOwner", new { id = owner.Id }, owner);
+            return CreatedAtAction(nameof(GetOwner), new { id = owner.Id }, owner);
         }
 
         // DELETE: api/Owners/5
