@@ -13,6 +13,10 @@
         public bool? DoesHomeVisits { get; set; }
         public bool? DoesWalks { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        // Navigation property for the Pets relationship
+        public List<Pet>? Pets { get; set; }
+
         public DateTime UpdatedAt { get; set; }
         public DateTime DeletedAt { get; set; }
     }
