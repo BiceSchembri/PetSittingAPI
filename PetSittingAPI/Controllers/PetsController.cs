@@ -17,12 +17,12 @@ namespace PetSittingAPI.Controllers
     public class PetsController : ControllerBase
     {
         private readonly PetSittingAPIContext _context;
-        private readonly IMapper _mapper; // Add the IMapper interface for AutoMapper
+        private readonly IMapper _mapper;
 
         public PetsController(PetSittingAPIContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = mapper; // Assign the IMapper instance to the private field
+            _mapper = mapper;
         }
 
         // GET: api/Pets
@@ -42,14 +42,10 @@ namespace PetSittingAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PetDTO>> GetPet(int id)
         {
-          if (_context.Pets == null)
-          {
-              return NotFound();
-          }
-            var pet = await _context.Pets.FindAsync(id);
+            var pet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == id);
             if (pet == null)
             {
-                return NotFound();
+                return NotFound();            
             }
             var petDTO = _mapper.Map<PetDTO>(pet);
             return petDTO;
