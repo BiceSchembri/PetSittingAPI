@@ -81,48 +81,25 @@ namespace PetSittingAPI.Controllers
             return NoContent();
         }
 
-
-
         // POST: api/Pets
         [HttpPost]
         public async Task<ActionResult<PetDTO>> PostPet(PetDTO petDTO)
         {
-            var pet = new Pet
-            {
-                Name = petDTO.Name,
-                CategoryId = petDTO.CategoryId,
-                DateOfBirth = petDTO.DateOfBirth,
-                Sex = petDTO.Sex,
-                PhysicalDescription = petDTO.PhysicalDescription,
-                Behaviour = petDTO.Behaviour,
-                Needs = petDTO.Needs,
-                OwnerId = petDTO.OwnerId,
-                SitterId = petDTO.SitterId
-            };
+            // Map the PetDTO to a new Pet entity using AutoMapper
+            var pet = _mapper.Map<Pet>(petDTO);
 
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
-            // Now you can create the PetDTO manually to return in the response
-            var createdPetDTO = new PetDTO
-            {
-                Id = pet.Id,
-                Name = pet.Name,
-                CategoryId = pet.CategoryId,
-                DateOfBirth = pet.DateOfBirth,
-                Sex = pet.Sex,
-                PhysicalDescription = pet.PhysicalDescription,
-                Behaviour = pet.Behaviour,
-                Needs = pet.Needs,
-                OwnerId = pet.OwnerId,
-                SitterId = pet.SitterId
-            };
+            // Map the newly created Pet entity back to a PetDTO for response
+            var createdPetDTO = _mapper.Map<PetDTO>(pet);
 
             return CreatedAtAction(
                 nameof(GetPet),
                 new { id = pet.Id },
                 createdPetDTO);
         }
+
 
 
         // DELETE: api/Pets/5
