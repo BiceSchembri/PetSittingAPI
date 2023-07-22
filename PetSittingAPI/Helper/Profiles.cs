@@ -9,8 +9,11 @@ namespace PetSittingAPI.Helper
         public Profiles() 
         {
             CreateMap<Pet?, PetDTO>();
+            CreateMap<PetDTO, Pet>();
             CreateMap<Owner?, OwnerDTO>();
+            CreateMap<OwnerDTO?, Owner>();
             CreateMap<Sitter?, SitterDTO>();
+            CreateMap<SitterDTO?, Sitter>();
         }
     }
 }

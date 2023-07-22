@@ -60,43 +60,27 @@ namespace PetSittingAPI.Controllers
                 return BadRequest();
             }
 
-            var petToUpdate = await _context.Pets.FindAsync(id);
-            if (petToUpdate == null)
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
             {
                 return NotFound();
             }
 
-            // Update the properties of the existing Pet entity with data from the PetDTO
-            petToUpdate.Name = petDTO.Name;
-            petToUpdate.CategoryId = petDTO.CategoryId;
-            petToUpdate.DateOfBirth = petDTO.DateOfBirth;
-            petToUpdate.Sex = petDTO.Sex;
-            petToUpdate.PhysicalDescription = petDTO.PhysicalDescription;
-            petToUpdate.Behaviour = petDTO.Behaviour;
-            petToUpdate.Needs = petDTO.Needs;
-            petToUpdate.OwnerId = petDTO.OwnerId;
-            petToUpdate.SitterId = petDTO.SitterId;
-
-            _context.Entry(petToUpdate).State = EntityState.Modified;
+            // Use AutoMapper to map the properties from petDTO to pet
+            _mapper.Map(petDTO, pet);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!PetExists(id))
             {
-                if (!PetExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
+
 
 
         // POST: api/Pets
@@ -167,11 +151,10 @@ namespace PetSittingAPI.Controllers
         }
 
         private static PetDTO PetToDTO(Pet pet) =>
-   
             new PetDTO
-   {
-       Id = pet.Id,
-       Name = pet.Name,
-   };
+            {
+            Id = pet.Id,
+            Name = pet.Name,
+            };
     }
 }
