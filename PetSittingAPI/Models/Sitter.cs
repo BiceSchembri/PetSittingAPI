@@ -7,17 +7,15 @@
         public string? Surname { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
-        // Inactive when on vacation, etc
         public bool? IsActive { get; set; }
         public bool? HasOwnPlace { get; set;}
         public bool? DoesHomeVisits { get; set; }
         public bool? DoesWalks { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        // Navigation property for the Pets relationship
-        public List<Pet>? Pets { get; set; }
-
         public DateTime UpdatedAt { get; set; }
         public DateTime DeletedAt { get; set; }
+
+        // Navigation property for the Pets relationship
+        public ICollection<Pet>? Pets { get; set; }
     }
 }

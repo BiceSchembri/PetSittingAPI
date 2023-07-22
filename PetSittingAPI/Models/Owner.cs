@@ -12,7 +12,6 @@
         public DateTime DeletedAt { get; set; }
 
         // Navigation property for the Pets relationship
-        public List<Pet>? Pets { get; set; }
-
+        public ICollection<Pet>? Pets { get; set; }
     }
 }

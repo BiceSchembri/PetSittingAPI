@@ -47,7 +47,6 @@ namespace PetSittingAPI.Controllers
               return NotFound();
           }
             var pet = await _context.Pets.FindAsync(id);
-
             if (pet == null)
             {
                 return NotFound();
@@ -57,16 +56,32 @@ namespace PetSittingAPI.Controllers
         }
 
         // PUT: api/Pets/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPet(int id, Pet pet)
+        public async Task<IActionResult> PutPet(int id, PetDTO petDTO)
         {
-            if (id != pet.Id)
+            if (id != petDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pet).State = EntityState.Modified;
+            var petToUpdate = await _context.Pets.FindAsync(id);
+            if (petToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            // Update the properties of the existing Pet entity with data from the PetDTO
+            petToUpdate.Name = petDTO.Name;
+            petToUpdate.CategoryId = petDTO.CategoryId;
+            petToUpdate.DateOfBirth = petDTO.DateOfBirth;
+            petToUpdate.Sex = petDTO.Sex;
+            petToUpdate.PhysicalDescription = petDTO.PhysicalDescription;
+            petToUpdate.Behaviour = petDTO.Behaviour;
+            petToUpdate.Needs = petDTO.Needs;
+            petToUpdate.OwnerId = petDTO.OwnerId;
+            petToUpdate.SitterId = petDTO.SitterId;
+
+            _context.Entry(petToUpdate).State = EntityState.Modified;
 
             try
             {
@@ -87,20 +102,48 @@ namespace PetSittingAPI.Controllers
             return NoContent();
         }
 
+
         // POST: api/Pets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Pet>> PostPet(Pet pet)
+        public async Task<ActionResult<PetDTO>> PostPet(PetDTO petDTO)
         {
-          if (_context.Pets == null)
-          {
-              return Problem("Entity set 'PetSittingAPIContext.Pets'  is null.");
-          }
+            var pet = new Pet
+            {
+                Name = petDTO.Name,
+                CategoryId = petDTO.CategoryId,
+                DateOfBirth = petDTO.DateOfBirth,
+                Sex = petDTO.Sex,
+                PhysicalDescription = petDTO.PhysicalDescription,
+                Behaviour = petDTO.Behaviour,
+                Needs = petDTO.Needs,
+                OwnerId = petDTO.OwnerId,
+                SitterId = petDTO.SitterId
+            };
+
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPet), new { id = pet.Id }, pet);
+            // Now you can create the PetDTO manually to return in the response
+            var createdPetDTO = new PetDTO
+            {
+                Id = pet.Id,
+                Name = pet.Name,
+                CategoryId = pet.CategoryId,
+                DateOfBirth = pet.DateOfBirth,
+                Sex = pet.Sex,
+                PhysicalDescription = pet.PhysicalDescription,
+                Behaviour = pet.Behaviour,
+                Needs = pet.Needs,
+                OwnerId = pet.OwnerId,
+                SitterId = pet.SitterId
+            };
+
+            return CreatedAtAction(
+                nameof(GetPet),
+                new { id = pet.Id },
+                createdPetDTO);
         }
+
 
         // DELETE: api/Pets/5
         [HttpDelete("{id}")]
@@ -126,5 +169,13 @@ namespace PetSittingAPI.Controllers
         {
             return (_context.Pets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static PetDTO PetToDTO(Pet pet) =>
+   
+            new PetDTO
+   {
+       Id = pet.Id,
+       Name = pet.Name,
+   };
     }
 }
