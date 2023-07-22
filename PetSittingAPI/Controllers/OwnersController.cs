@@ -40,7 +40,9 @@ namespace PetSittingAPI.Controllers
           {
               return NotFound();
           }
-            var owner = await _context.Owners.FindAsync(id);
+            var owner = await _context.Owners
+                .Include(o => o.Pets) // Include the Pets navigation property
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (owner == null)
             {

@@ -21,7 +21,7 @@ namespace PetSittingAPI.Models
         public DateTime DeletedAt { get; set; }
 
         // Navigation properties
-        public Category? Category { get; set; } // Navigation property for the Species relationship
+        public Category? Category { get; set; } // Navigation property for the Category relationship
         public Owner? Owner { get; set; } // Navigation property for the Owner relationship
         public Sitter? Sitter { get; set; } // Navigation property for the PetSitter relationship
     }

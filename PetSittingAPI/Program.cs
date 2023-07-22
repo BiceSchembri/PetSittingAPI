@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using PetSittingAPI.Data;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<PetSittingAPIContext>(options =>
 {

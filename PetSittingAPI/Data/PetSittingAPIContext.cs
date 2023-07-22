@@ -21,7 +21,7 @@ namespace PetSittingAPI.Data
 
             // Configure relationships and foreign keys
 
-            // Pet to Type (Species) relationship
+            // Pet to Category relationship
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.Category)
                 .WithMany()

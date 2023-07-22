@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSittingAPI.Data;
 using PetSittingAPI.Models;
+using PetSittingAPI.DTOs;
+using AutoMapper;
 
 namespace PetSittingAPI.Controllers
 {
@@ -15,26 +17,30 @@ namespace PetSittingAPI.Controllers
     public class PetsController : ControllerBase
     {
         private readonly PetSittingAPIContext _context;
+        private readonly IMapper _mapper; // Add the IMapper interface for AutoMapper
 
-        public PetsController(PetSittingAPIContext context)
+        public PetsController(PetSittingAPIContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper; // Assign the IMapper instance to the private field
         }
 
         // GET: api/Pets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pet>>> GetPets()
+        public async Task<ActionResult<IEnumerable<PetDTO>>> GetPets()
         {
           if (_context.Pets == null)
           {
               return NotFound();
           }
-            return await _context.Pets.ToListAsync();
+            var pets = await _context.Pets.ToListAsync();
+            var petDTOs = _mapper.Map<List<PetDTO>>(pets);
+            return petDTOs;
         }
 
         // GET: api/Pets/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pet>> GetPet(int id)
+        public async Task<ActionResult<PetDTO>> GetPet(int id)
         {
           if (_context.Pets == null)
           {
@@ -46,8 +52,8 @@ namespace PetSittingAPI.Controllers
             {
                 return NotFound();
             }
-
-            return pet;
+            var petDTO = _mapper.Map<PetDTO>(pet);
+            return petDTO;
         }
 
         // PUT: api/Pets/5
