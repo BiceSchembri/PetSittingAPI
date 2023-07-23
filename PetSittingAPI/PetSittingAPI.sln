@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetSittingAPI", "PetSittingAPI.csproj", "{F483578A-CF4C-495C-8252-1304B395F640}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F483578A-CF4C-495C-8252-1304B395F640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F483578A-CF4C-495C-8252-1304B395F640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F483578A-CF4C-495C-8252-1304B395F640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F483578A-CF4C-495C-8252-1304B395F640}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF8B71EB-FE15-477E-9610-1BB010D15808}
+	EndGlobalSection
+EndGlobal
