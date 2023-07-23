@@ -24,7 +24,7 @@ namespace PetSittingAPI.Data
             // Pet to Category relationship
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.Category)
-                .WithMany()
+                .WithMany(c => c.Pets)
                 .HasForeignKey(p => p.CategoryId);
 
             // Pet to Owner relationship

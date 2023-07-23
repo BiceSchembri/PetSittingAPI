@@ -1,6 +1,5 @@
 ﻿namespace PetSittingAPI.DTOs
-{
-    public class SitterDTO
+{    public class SitterDTO
     {
         public int Id { get; set; }
         public string? Name { get; set; }

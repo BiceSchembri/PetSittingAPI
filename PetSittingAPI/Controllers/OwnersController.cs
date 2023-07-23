@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSittingAPI.Data;
 using PetSittingAPI.Models;
+using PetSittingAPI.DTOs;
+using AutoMapper;
 
 namespace PetSittingAPI.Controllers
 {
@@ -15,87 +17,87 @@ namespace PetSittingAPI.Controllers
     public class OwnersController : ControllerBase
     {
         private readonly PetSittingAPIContext _context;
+        private readonly IMapper _mapper;
 
-        public OwnersController(PetSittingAPIContext context)
+        public OwnersController(PetSittingAPIContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Owners
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Owner>>> GetOwners()
+        public async Task<ActionResult<IEnumerable<OwnerDTO>>> GetOwners()
         {
           if (_context.Owners == null)
           {
               return NotFound();
           }
-            return await _context.Owners.ToListAsync();
+          var owners = await _context.Owners.ToListAsync();
+            var ownerDTOs = _mapper.Map<List<OwnerDTO>>(owners);
+            return ownerDTOs;
         }
 
         // GET: api/Owners/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Owner>> GetOwner(int id)
+        public async Task<ActionResult<OwnerDTO>> GetOwner(int id)
         {
-          if (_context.Owners == null)
-          {
-              return NotFound();
-          }
-            var owner = await _context.Owners
-                .Include(o => o.Pets) // Include the Pets navigation property
-                .FirstOrDefaultAsync(o => o.Id == id);
+            var owner = await _context.Owners.FirstOrDefaultAsync(o => o.Id == id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+            var ownerDTO = _mapper.Map<OwnerDTO>(owner);
+            return ownerDTO;
+        }
 
+        // PUT: api/Owners/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOwner(int id, OwnerDTO ownerDTO)
+        {
+            if (id != ownerDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var owner = await _context.Owners.FindAsync(id);
             if (owner == null)
             {
                 return NotFound();
             }
 
-            return owner;
-        }
-
-        // PUT: api/Owners/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOwner(int id, Owner owner)
-        {
-            if (id != owner.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(owner).State = EntityState.Modified;
+            // Use AutoMapper to map the properties from petDTO to pet
+            _mapper.Map(ownerDTO, owner);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!OwnerExists(id))
             {
-                if (!OwnerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
 
         // POST: api/Owners
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Owner>> PostOwner(Owner owner)
+        public async Task<ActionResult<OwnerDTO>> PostOwner(OwnerDTO ownerDTO)
         {
-          if (_context.Owners == null)
-          {
-              return Problem("Entity set 'PetSittingAPIContext.Owners'  is null.");
-          }
+            // Map the OwnerDTO to a new Owner entity using AutoMapper
+            var owner = _mapper.Map<Owner>(ownerDTO);
+
             _context.Owners.Add(owner);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetOwner), new { id = owner.Id }, owner);
+            // Map the newly created Owner entity back to an OwnerDTO for response
+            var createdOwnerDTO = _mapper.Map<OwnerDTO>(owner);
+
+            return CreatedAtAction(
+                nameof(GetOwner),
+                new { id = owner.Id },
+                createdOwnerDTO);
         }
 
         // DELETE: api/Owners/5

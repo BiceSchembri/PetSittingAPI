@@ -100,8 +100,6 @@ namespace PetSittingAPI.Controllers
                 createdPetDTO);
         }
 
-
-
         // DELETE: api/Pets/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePet(int id)
@@ -126,12 +124,5 @@ namespace PetSittingAPI.Controllers
         {
             return (_context.Pets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
-        private static PetDTO PetToDTO(Pet pet) =>
-            new PetDTO
-            {
-            Id = pet.Id,
-            Name = pet.Name,
-            };
     }
 }

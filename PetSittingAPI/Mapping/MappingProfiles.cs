@@ -4,9 +4,9 @@ using PetSittingAPI.DTOs;
 
 namespace PetSittingAPI.Helper
 {
-    public class Profiles : Profile
+    public class MappingProfiles : Profile
     {
-        public Profiles() 
+        public MappingProfiles() 
         {
             CreateMap<Pet?, PetDTO>();
             CreateMap<PetDTO, Pet>();
@@ -14,6 +14,8 @@ namespace PetSittingAPI.Helper
             CreateMap<OwnerDTO?, Owner>();
             CreateMap<Sitter?, SitterDTO>();
             CreateMap<SitterDTO?, Sitter>();
+            CreateMap<Category?, CategoryDTO>();
+            CreateMap<CategoryDTO, Category>();
         }
     }
 }

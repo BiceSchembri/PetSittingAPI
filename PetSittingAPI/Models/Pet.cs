@@ -24,5 +24,7 @@ namespace PetSittingAPI.Models
         public Category? Category { get; set; } // Navigation property for the Category relationship
         public Owner? Owner { get; set; } // Navigation property for the Owner relationship
         public Sitter? Sitter { get; set; } // Navigation property for the PetSitter relationship
+
+        public ICollection<Owner>? Owners { get; set; }
     }
 }

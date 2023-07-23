@@ -13,6 +13,9 @@
         public int OwnerId { get; set; }
         public int? SitterId { get; set; }
 
+        // public ICollection<OwnerDTO>? Owners { get; set; }
+
+
         // No need to include CreatedAt, UpdatedAt, and DeletedAt properties in the DTO
         // The timestamps are automatically assigned, so they don't need to be part of the API input.
 

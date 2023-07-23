@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSittingAPI.Data;
 using PetSittingAPI.Models;
+using PetSittingAPI.DTOs;
+using AutoMapper;
 
 namespace PetSittingAPI.Controllers
 {
@@ -15,84 +17,84 @@ namespace PetSittingAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly PetSittingAPIContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(PetSittingAPIContext context)
+        public CategoriesController(PetSittingAPIContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
         {
-          if (_context.Categories == null)
-          {
-              return NotFound();
-          }
-            return await _context.Categories.ToListAsync();
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            var categories = await _context.Categories.ToListAsync();
+            var categoryDTOs = _mapper.Map<List<CategoryDTO>>(categories);
+            return categoryDTOs;
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
         {
-          if (_context.Categories == null)
-          {
-              return NotFound();
-          }
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            var categoryDTO = _mapper.Map<CategoryDTO>(category);
+            return categoryDTO;
+        }
 
+        // PUT: api/Categories/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCategory(int id, CategoryDTO categoryDTO)
+        {
+            if (id != categoryDTO.Id)
+            {
+                return BadRequest();
+            }
+
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            return category;
-        }
-
-        // PUT: api/Categories/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
-        {
-            if (id != category.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(category).State = EntityState.Modified;
+            _mapper.Map(categoryDTO, category);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) when (!CategoryExists(id))
             {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
             return NoContent();
         }
 
         // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryDTO>> PostCategory(CategoryDTO categoryDTO)
         {
-          if (_context.Categories == null)
-          {
-              return Problem("Entity set 'PetSittingAPIContext.Categories'  is null.");
-          }
+            var category = _mapper.Map<Category>(categoryDTO);
+
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
+            var createdCategoryDTO = _mapper.Map<CategoryDTO>(category);
+
+            return CreatedAtAction(
+                nameof(GetCategory),
+                new { id = category.Id },
+                createdCategoryDTO);
         }
 
         // DELETE: api/Categories/5
