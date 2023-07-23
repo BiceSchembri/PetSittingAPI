@@ -98,7 +98,7 @@ Request:
 
 Response:
 
-<img width="323" alt="Screenshot 2023-07-23 223948" src="https://github.com/BiceSchembri/PetSittingAPI/assets/103190920/035a59f6-605c-4c25-be9d-e2dbc9a70b77" style="display: block; margin: auto">
+<img width="323" alt="response-petsittingapi" src="https://github.com/BiceSchembri/PetSittingAPI/assets/103190920/fff956f6-49c6-45df-a35d-1868ba820feb">
 
 ## Errors
 
